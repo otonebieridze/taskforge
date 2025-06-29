@@ -1,9 +1,15 @@
+import Header from "./components/Header";
+import TaskInput from "./components/TaskInput";
+import TaskList from "./components/TaskList";
+
 function App() {
   return (
-    <>
-      <h1 className="text-3xl font-bold underline">Vite + React</h1>
-    </>
-  )
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center p-4">
+      <Header />
+      <TaskInput />
+      <TaskList />
+    </div>
+  );
 }
 
-export default App
+export default App;
