@@ -1,5 +1,5 @@
 import TaskItem from "./TaskItem";
-import type { Task } from "../App";
+import type { Task } from "../hooks/useTasks";
 
 type Props = {
   tasks: Task[];
