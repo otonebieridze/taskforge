@@ -1,11 +1,16 @@
 import TaskItem from "./TaskItem";
+import type { Task } from "../App";
 
-export default function TaskList() {
+type Props = {
+  tasks: Task[];
+};
+
+export default function TaskList({ tasks }: Props) {
   return (
-    <div>
-      <TaskItem title="Buy groceries" completed={true} />
-      <TaskItem title="Learn React" completed={false} />
-      <TaskItem title="Push code to GitHub" completed={false} />
+    <div className="w-full max-w-md">
+      {tasks.map((task) => (
+        <TaskItem key={task.id} title={task.title} completed={task.completed} />
+      ))}
     </div>
   );
 }
