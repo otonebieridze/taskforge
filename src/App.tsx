@@ -5,7 +5,7 @@ import TaskList from "./components/TaskList";
 import { useTasks } from "./hooks/useTasks";
 
 export default function App() {
-  const { tasks, addTask, deleteTask, toggleComplete } = useTasks();
+  const { tasks, addTask, deleteTask, toggleComplete, editTitle } = useTasks();
 
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col items-center p-4">
@@ -15,6 +15,7 @@ export default function App() {
         tasks={tasks}
         deleteTask={deleteTask}
         toggleComplete={toggleComplete}
+        editTitle={editTitle}
       />
     </div>
   );

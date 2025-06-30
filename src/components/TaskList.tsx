@@ -5,9 +5,15 @@ type Props = {
   tasks: Task[];
   deleteTask: (id: number) => void;
   toggleComplete: (id: number) => void;
+  editTitle: (id: number, newTitle: string) => void;
 };
 
-export default function TaskList({ tasks, deleteTask, toggleComplete }: Props) {
+export default function TaskList({
+  tasks,
+  deleteTask,
+  toggleComplete,
+  editTitle,
+}: Props) {
   return (
     <div className="w-full max-w-md">
       {tasks.map((task) => (
@@ -16,6 +22,7 @@ export default function TaskList({ tasks, deleteTask, toggleComplete }: Props) {
           task={task}
           deleteTask={deleteTask}
           toggleComplete={toggleComplete}
+          editTitle={editTitle}
         />
       ))}
     </div>

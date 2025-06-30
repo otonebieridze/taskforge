@@ -45,10 +45,17 @@ export function useTasks() {
     );
   };
 
+  const editTitle = (id: number, newTitle: string) => {
+    setTasks((prev) =>
+      prev.map((task) => (task.id === id ? { ...task, title: newTitle } : task))
+    );
+  };
+
   return {
     tasks,
     addTask,
     deleteTask,
     toggleComplete,
+    editTitle,
   };
 }
