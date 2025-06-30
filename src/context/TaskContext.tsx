@@ -1,7 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, createContext, useContext } from "react";
 import type { Task } from "../types/task";
 
-export function useTasks() {
+type TaskContextType = {
+  tasks: Task[];
+  addTask: (title: string, status: Task["status"]) => void;
+  deleteTask: (id: number) => void;
+  toggleComplete: (id: number) => void;
+  editTitle: (id: number, newTitle: string) => void;
+};
+
+const TaskContext = createContext<TaskContextType | null>(null);
+
+export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
   const [tasks, setTasks] = useState<Task[]>(() => {
     const stored = localStorage.getItem("tasks");
     if (stored) {
@@ -54,11 +64,17 @@ export function useTasks() {
     );
   };
 
-  return {
-    tasks,
-    addTask,
-    deleteTask,
-    toggleComplete,
-    editTitle,
-  };
+  return (
+    <TaskContext.Provider
+      value={{ tasks, addTask, deleteTask, toggleComplete, editTitle }}
+    >
+      {children}
+    </TaskContext.Provider>
+  );
 }
+
+export const useTasks = () => {
+  const context = useContext(TaskContext);
+  if (!context) throw new Error("useTasks must be used inside <TaskProvider>");
+  return context;
+};

@@ -1,5 +1,5 @@
 import Column from "../board/Column";
-import { useTasks } from "../../hooks/useTasks";
+import { useTasks } from "../../context/TaskContext";
 
 export default function Board() {
   const { tasks } = useTasks();

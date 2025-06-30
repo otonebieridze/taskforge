@@ -1,7 +1,7 @@
 import { FaCheckSquare, FaRegSquare, FaTrashAlt } from "react-icons/fa";
 import type { Task } from "../../types/task";
 import { useState } from "react";
-import { useTasks } from "../../hooks/useTasks";
+import { useTasks } from "../../context/TaskContext";
 
 type Props = {
   task: Task;
