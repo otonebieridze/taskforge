@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export type Task = {
   id: number;
@@ -7,11 +7,21 @@ export type Task = {
 };
 
 export function useTasks() {
-  const [tasks, setTasks] = useState<Task[]>([
-    { id: 1, title: "Learn React", completed: true },
-    { id: 2, title: "Write Code", completed: true },
-    { id: 3, title: "Push Code to GitHub", completed: false },
-  ]);
+  const [tasks, setTasks] = useState<Task[]>(() => {
+    const stored = localStorage.getItem("tasks");
+    if (stored) {
+      try {
+        return JSON.parse(stored);
+      } catch {
+        console.error("Invalid JSON in localStorage");
+      }
+    }
+    return [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+  }, [tasks]);
 
   const addTask = (title: string) => {
     const newTask: Task = {
