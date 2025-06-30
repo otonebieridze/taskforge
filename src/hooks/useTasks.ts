@@ -1,10 +1,5 @@
 import { useEffect, useState } from "react";
-
-export type Task = {
-  id: number;
-  title: string;
-  completed: boolean;
-};
+import type { Task } from "../types/task";
 
 export function useTasks() {
   const [tasks, setTasks] = useState<Task[]>(() => {
@@ -16,18 +11,26 @@ export function useTasks() {
         console.error("Invalid JSON in localStorage");
       }
     }
-    return [];
+    return [
+      {
+        id: 1,
+        title: "Example task",
+        completed: false,
+        status: "planning",
+      },
+    ];
   });
 
   useEffect(() => {
     localStorage.setItem("tasks", JSON.stringify(tasks));
   }, [tasks]);
 
-  const addTask = (title: string) => {
+  const addTask = (title: string, status: Task["status"]) => {
     const newTask: Task = {
       id: Date.now(),
       title,
       completed: false,
+      status,
     };
 
     setTasks((prev) => [...prev, newTask]);

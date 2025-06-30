@@ -1,34 +1,29 @@
 import { FaCheckSquare, FaRegSquare, FaTrashAlt } from "react-icons/fa";
-import type { Task } from "../hooks/useTasks";
+import type { Task } from "../../types/task";
 import { useState } from "react";
+import { useTasks } from "../../hooks/useTasks";
 
 type Props = {
   task: Task;
-  deleteTask: (id: number) => void;
-  toggleComplete: (id: number) => void;
-  editTitle: (id: number, newTitle: string) => void;
 };
 
-export default function TaskItem({
-  task,
-  deleteTask,
-  toggleComplete,
-  editTitle,
-}: Props) {
+export default function TaskCard({ task }: Props) {
+  const { toggleComplete, deleteTask, editTitle } = useTasks();
+
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(task.title);
 
   return (
-    <div className="flex items-center justify-between bg-white p-2 rounded shadow mb-2">
+    <div className="flex items-center justify-between bg-white p-3 rounded shadow hover:shadow-md">
       <div className="flex items-center gap-2">
         <span
           onClick={() => toggleComplete(task.id)}
           className="cursor-pointer"
         >
           {task.completed ? (
-            <FaCheckSquare className="text-green-600" size={20} />
+            <FaCheckSquare className="text-green-600" size={18} />
           ) : (
-            <FaRegSquare className="text-gray-500" size={20} />
+            <FaRegSquare className="text-gray-500" size={18} />
           )}
         </span>
 
@@ -68,7 +63,7 @@ export default function TaskItem({
       <FaTrashAlt
         onClick={() => deleteTask(task.id)}
         className="text-red-500 hover:text-red-700 cursor-pointer"
-        size={20}
+        size={18}
       />
     </div>
   );
