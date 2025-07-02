@@ -11,7 +11,7 @@ type TaskContextType = {
     tags?: string[]
   ) => void;
   deleteTask: (id: number) => void;
-  editTitle: (id: number, newTitle: string) => void;
+  updateTask: (updatedTask: Task) => void;
 };
 
 const TaskContext = createContext<TaskContextType | null>(null);
@@ -63,16 +63,14 @@ export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
     setTasks((prev) => prev.filter((task) => task.id !== id));
   };
 
-  const editTitle = (id: number, newTitle: string) => {
+  const updateTask = (updatedTask: Task) => {
     setTasks((prev) =>
-      prev.map((task) => (task.id === id ? { ...task, title: newTitle } : task))
+      prev.map((task) => (task.id === updatedTask.id ? updatedTask : task))
     );
   };
 
   return (
-    <TaskContext.Provider
-      value={{ tasks, addTask, deleteTask, editTitle }}
-    >
+    <TaskContext.Provider value={{ tasks, addTask, deleteTask, updateTask }}>
       {children}
     </TaskContext.Provider>
   );
