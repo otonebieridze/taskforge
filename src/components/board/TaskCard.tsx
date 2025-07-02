@@ -20,7 +20,7 @@ export default function TaskCard({ task }: Props) {
         whileHover={{ scale: 1.03 }}
         whileTap={{ scale: 0.97 }}
         onClick={() => setIsEditing(true)}
-        className="bg-white p-4 rounded-xl shadow hover:shadow-md space-y-2 cursor-pointer mt-4 select-none transition duration-200"
+        className="bg-white p-4 rounded-xl shadow hover:shadow-md space-y-2 cursor-pointer mt-4 mb-4 select-none transition duration-200"
       >
         <div className="w-full flex items-center justify-between">
           <h3 className="text-lg font-medium text-gray-800">{task.title}</h3>

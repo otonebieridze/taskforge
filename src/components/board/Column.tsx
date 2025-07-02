@@ -22,6 +22,12 @@ export default function Column({ title, tasks, status }: Props) {
         ${snapshot.isDraggingOver ? "bg-blue-50 border-blue-400" : "bg-gray-50"}
         p-2 rounded-lg`}
           >
+            {tasks.length === 0 && (
+              <p className="text-base text-gray-400 italic text-center py-6">
+                No tasks here
+              </p>
+            )}
+
             {tasks.map((task, index) => (
               <Draggable
                 key={task.id}
