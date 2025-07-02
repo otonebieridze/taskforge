@@ -3,9 +3,14 @@ import type { Task } from "../types/task";
 
 type TaskContextType = {
   tasks: Task[];
-  addTask: (title: string, status: Task["status"]) => void;
+  addTask: (
+    title: string,
+    status: Task["status"],
+    description?: string,
+    dueDate?: string,
+    tags?: string[]
+  ) => void;
   deleteTask: (id: number) => void;
-  toggleComplete: (id: number) => void;
   editTitle: (id: number, newTitle: string) => void;
 };
 
@@ -35,12 +40,20 @@ export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
     localStorage.setItem("tasks", JSON.stringify(tasks));
   }, [tasks]);
 
-  const addTask = (title: string, status: Task["status"]) => {
+  const addTask = (
+    title: string,
+    status: Task["status"],
+    description?: string,
+    dueDate?: string,
+    tags?: string[]
+  ) => {
     const newTask: Task = {
       id: Date.now(),
       title,
-      completed: false,
       status,
+      description,
+      dueDate,
+      tags,
     };
 
     setTasks((prev) => [...prev, newTask]);
@@ -48,14 +61,6 @@ export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
 
   const deleteTask = (id: number) => {
     setTasks((prev) => prev.filter((task) => task.id !== id));
-  };
-
-  const toggleComplete = (id: number) => {
-    setTasks((prev) =>
-      prev.map((task) =>
-        task.id === id ? { ...task, completed: !task.completed } : task
-      )
-    );
   };
 
   const editTitle = (id: number, newTitle: string) => {
@@ -66,12 +71,12 @@ export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <TaskContext.Provider
-      value={{ tasks, addTask, deleteTask, toggleComplete, editTitle }}
+      value={{ tasks, addTask, deleteTask, editTitle }}
     >
       {children}
     </TaskContext.Provider>
   );
-}
+};
 
 export const useTasks = () => {
   const context = useContext(TaskContext);

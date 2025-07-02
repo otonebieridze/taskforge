@@ -12,15 +12,24 @@ export default function CreateTaskModal({ isOpen, onClose }: Props) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [status, setStatus] = useState<"planning" | "in-progress" | "done">("planning");
+  const [dueDate, setDueDate] = useState("");
+  const [tags, setTags] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) return;
 
-    addTask(title.trim(), status);
+    const tagArray = tags
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter((tag) => tag !== "");
+
+    addTask(title.trim(), status, description, dueDate, tagArray);
     setTitle("");
     setDescription("");
     setStatus("planning");
+    setDueDate("");
+    setTags("");
     onClose();
   };
 
@@ -46,6 +55,21 @@ export default function CreateTaskModal({ isOpen, onClose }: Props) {
             onChange={(e) => setDescription(e.target.value)}
             className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
             rows={3}
+          />
+
+          <input
+            type="date"
+            value={dueDate}
+            onChange={(e) => setDueDate(e.target.value)}
+            className="w-full border border-gray-300 rounded-lg px-3 py-2"
+          />
+
+          <input
+            type="text"
+            placeholder="Tags (comma separated)"
+            value={tags}
+            onChange={(e) => setTags(e.target.value)}
+            className="w-full border border-gray-300 rounded-lg px-3 py-2"
           />
 
           <select
