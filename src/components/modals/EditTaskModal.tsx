@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import type { Task } from "../../types/task";
 import { useTasks } from "../../context/TaskContext";
+import CreatableSelect from "react-select/creatable";
 
 type Props = {
   task: Task | null;
@@ -12,16 +13,32 @@ export default function EditTaskModal({ task, onClose }: Props) {
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [status, setStatus] = useState<"planning" | "in-progress" | "done">("planning");
+  const [status, setStatus] = useState<"planning" | "in-progress" | "done">(
+    "planning"
+  );
   const [dueDate, setDueDate] = useState("");
-  const [tags, setTags] = useState("");
+  const [selectedTags, setSelectedTags] = useState<
+    { label: string; value: string }[]
+  >([]);
+
+  const availableTags = [
+    { value: "urgent", label: "Urgent" },
+    { value: "feature", label: "Feature" },
+    { value: "frontend", label: "Frontend" },
+    { value: "backend", label: "Backend" },
+  ];
 
   useEffect(() => {
     if (task) {
       setTitle(task.title);
       setDescription(task.description || "");
       setDueDate(task.dueDate || "");
-      setTags((task.tags || []).join(", "));
+      setSelectedTags(
+        (task.tags || []).map((tag) => ({
+          label: tag,
+          value: tag,
+        }))
+      );
       setStatus(task.status);
     }
   }, [task]);
@@ -35,10 +52,7 @@ export default function EditTaskModal({ task, onClose }: Props) {
       title,
       description,
       dueDate,
-      tags: tags
-        .split(",")
-        .map((tag) => tag.trim())
-        .filter((tag) => tag),
+      tags: selectedTags.map((tag) => tag.value),
       status,
     };
 
@@ -74,12 +88,17 @@ export default function EditTaskModal({ task, onClose }: Props) {
             onChange={(e) => setDueDate(e.target.value)}
             className="w-full border border-gray-300 rounded-lg px-3 py-2"
           />
-          <input
-            type="text"
-            placeholder="Tags (comma separated)"
-            value={tags}
-            onChange={(e) => setTags(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2"
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Tags
+          </label>
+          <CreatableSelect
+            isMulti
+            options={availableTags}
+            value={selectedTags}
+            onChange={(newValue) =>
+              setSelectedTags(newValue as { label: string; value: string }[])
+            }
+            classNamePrefix="react-select"
           />
           <select
             value={status}

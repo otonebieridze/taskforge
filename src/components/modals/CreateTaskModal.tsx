@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useTasks } from "../../context/TaskContext";
+import CreatableSelect from "react-select/creatable";
+import type { Task } from "../../types/task";
 
 type Props = {
   isOpen: boolean;
@@ -11,25 +13,33 @@ export default function CreateTaskModal({ isOpen, onClose }: Props) {
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [status, setStatus] = useState<"planning" | "in-progress" | "done">("planning");
+  const [status, setStatus] = useState<"planning" | "in-progress" | "done">(
+    "planning"
+  );
   const [dueDate, setDueDate] = useState("");
-  const [tags, setTags] = useState("");
+  const [selectedTags, setSelectedTags] = useState<
+    { label: string; value: string }[]
+  >([]);
+
+  const availableTags = [
+    { value: "urgent", label: "Urgent" },
+    { value: "feature", label: "Feature" },
+    { value: "frontend", label: "Frontend" },
+    { value: "backend", label: "Backend" },
+  ];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) return;
 
-    const tagArray = tags
-      .split(",")
-      .map((tag) => tag.trim())
-      .filter((tag) => tag !== "");
+    const tags = selectedTags.map((tag) => tag.value);
 
-    addTask(title.trim(), status, description, dueDate, tagArray);
+    addTask(title.trim(), status, description, dueDate, tags);
     setTitle("");
     setDescription("");
     setStatus("planning");
     setDueDate("");
-    setTags("");
+    setSelectedTags([]);
     onClose();
   };
 
@@ -38,7 +48,9 @@ export default function CreateTaskModal({ isOpen, onClose }: Props) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-white/30">
       <div className="bg-white p-6 rounded-2xl shadow-xl w-full max-w-md border border-gray-200">
-        <h2 className="text-xl font-semibold mb-4 text-gray-800">Create New Task</h2>
+        <h2 className="text-xl font-semibold mb-4 text-gray-800">
+          Create New Task
+        </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             autoFocus
@@ -64,17 +76,22 @@ export default function CreateTaskModal({ isOpen, onClose }: Props) {
             className="w-full border border-gray-300 rounded-lg px-3 py-2"
           />
 
-          <input
-            type="text"
-            placeholder="Tags (comma separated)"
-            value={tags}
-            onChange={(e) => setTags(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2"
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Tags
+          </label>
+          <CreatableSelect
+            isMulti
+            options={availableTags}
+            value={selectedTags}
+            onChange={(newValue) =>
+              setSelectedTags(newValue as { label: string; value: string }[])
+            }
+            classNamePrefix="react-select"
           />
 
           <select
             value={status}
-            onChange={(e) => setStatus(e.target.value as any)}
+            onChange={(e) => setStatus(e.target.value as Task["status"])}
             className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="planning">Planning</option>

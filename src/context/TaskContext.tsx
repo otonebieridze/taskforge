@@ -30,7 +30,8 @@ export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
       {
         id: 1,
         title: "Example task",
-        completed: false,
+        description: "This is an example task",
+        tags: ["example", "frontend", "backend"],
         status: "planning",
       },
     ];
