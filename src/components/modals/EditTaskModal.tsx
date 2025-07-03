@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import type { Task } from "../../types/task";
 import { useTasks } from "../../context/TaskContext";
 import CreatableSelect from "react-select/creatable";
+import { useTags } from "../../context/TagContext";
 
 type Props = {
   task: Task | null;
@@ -10,6 +11,7 @@ type Props = {
 
 export default function EditTaskModal({ task, onClose }: Props) {
   const { updateTask } = useTasks();
+  const { tags: availableTags, addTag } = useTags();
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -21,12 +23,10 @@ export default function EditTaskModal({ task, onClose }: Props) {
     { label: string; value: string }[]
   >([]);
 
-  const availableTags = [
-    { value: "urgent", label: "Urgent" },
-    { value: "feature", label: "Feature" },
-    { value: "frontend", label: "Frontend" },
-    { value: "backend", label: "Backend" },
-  ];
+  const tagOptions = availableTags.map((tag) => ({
+    label: tag.label,
+    value: tag.id,
+  }));
 
   useEffect(() => {
     if (task) {
@@ -93,11 +93,18 @@ export default function EditTaskModal({ task, onClose }: Props) {
           </label>
           <CreatableSelect
             isMulti
-            options={availableTags}
+            options={tagOptions}
             value={selectedTags}
             onChange={(newValue) =>
               setSelectedTags(newValue as { label: string; value: string }[])
             }
+            onCreateOption={(label) => {
+              addTag(label);
+              setSelectedTags((prev) => [
+                ...prev,
+                { label, value: label.toLowerCase() },
+              ]);
+            }}
             classNamePrefix="react-select"
           />
           <select

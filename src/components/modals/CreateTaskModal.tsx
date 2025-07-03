@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useTasks } from "../../context/TaskContext";
 import CreatableSelect from "react-select/creatable";
 import type { Task } from "../../types/task";
+import { useTags } from "../../context/TagContext";
 
 type Props = {
   isOpen: boolean;
@@ -10,6 +11,7 @@ type Props = {
 
 export default function CreateTaskModal({ isOpen, onClose }: Props) {
   const { addTask } = useTasks();
+  const { tags: availableTags, addTag } = useTags();
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -21,18 +23,18 @@ export default function CreateTaskModal({ isOpen, onClose }: Props) {
     { label: string; value: string }[]
   >([]);
 
-  const availableTags = [
-    { value: "urgent", label: "Urgent" },
-    { value: "feature", label: "Feature" },
-    { value: "frontend", label: "Frontend" },
-    { value: "backend", label: "Backend" },
-  ];
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!title.trim()) return;
 
     const tags = selectedTags.map((tag) => tag.value);
+
+    selectedTags.forEach((tag) => {
+      const exists = availableTags.some((t) => t.id === tag.value);
+      if (!exists) {
+        addTag(tag.label);
+      }
+    });
 
     addTask(title.trim(), status, description, dueDate, tags);
     setTitle("");
@@ -81,11 +83,21 @@ export default function CreateTaskModal({ isOpen, onClose }: Props) {
           </label>
           <CreatableSelect
             isMulti
-            options={availableTags}
+            options={availableTags.map((tag) => ({
+              label: tag.label,
+              value: tag.id,
+            }))}
             value={selectedTags}
             onChange={(newValue) =>
               setSelectedTags(newValue as { label: string; value: string }[])
             }
+            onCreateOption={(inputValue) => {
+              const newTag = {
+                label: inputValue,
+                value: inputValue.toLowerCase(),
+              };
+              setSelectedTags((prev) => [...prev, newTag]);
+            }}
             classNamePrefix="react-select"
           />
 
