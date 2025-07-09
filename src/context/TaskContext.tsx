@@ -10,6 +10,7 @@ type TaskContextType = {
     dueDate?: string,
     tags?: string[]
   ) => void;
+  setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
   deleteTask: (id: number) => void;
   updateTask: (updatedTask: Task) => void;
 };
@@ -71,7 +72,7 @@ export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <TaskContext.Provider value={{ tasks, addTask, deleteTask, updateTask }}>
+    <TaskContext.Provider value={{ tasks, addTask, setTasks, deleteTask, updateTask }}>
       {children}
     </TaskContext.Provider>
   );

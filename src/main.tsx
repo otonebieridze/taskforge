@@ -7,10 +7,10 @@ import { TagProvider } from "./context/TagContext.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <TagProvider>
-      <TaskProvider>
+    <TaskProvider>
+      <TagProvider>
         <App />
-      </TaskProvider>
-    </TagProvider>
+      </TagProvider>
+    </TaskProvider>
   </StrictMode>
 );

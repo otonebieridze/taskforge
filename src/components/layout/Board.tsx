@@ -6,8 +6,12 @@ import type { DropResult } from "@hello-pangea/dnd";
 import { FaLightbulb } from "react-icons/fa";
 import type { Task } from "../../types/task";
 
+import EditTagsModal from "../modals/EditTagsModal";
+import { useState } from "react";
+
 export default function Board() {
   const { tasks, updateTask } = useTasks();
+  const [showEditTags, setShowEditTags] = useState(false);
 
   const planning = tasks.filter((t) => t.status === "planning");
   const inProgress = tasks.filter((t) => t.status === "in-progress");
@@ -34,6 +38,18 @@ export default function Board() {
           <FaLightbulb className="text-yellow-300" /> Drag tasks to organize
           your workflow
         </span>
+
+        <button
+          onClick={() => setShowEditTags(true)}
+          className="text-sm text-blue-600 hover:underline"
+        >
+          Edit Tags
+        </button>
+
+        <EditTagsModal
+          isOpen={showEditTags}
+          onClose={() => setShowEditTags(false)}
+        />
       </div>
       <DragDropContext onDragEnd={handleDragEnd}>
         <div className="flex gap-4 overflow-x-auto p-4 items-start">

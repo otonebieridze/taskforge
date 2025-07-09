@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
+import { useTasks } from "./TaskContext";
 
 export type Tag = {
   id: string;
@@ -10,6 +11,8 @@ type TagContextType = {
   tags: Tag[];
   addTag: (label: string) => void;
   setTags: React.Dispatch<React.SetStateAction<Tag[]>>;
+  deleteTag: (value: string) => void;
+  editTag: (oldValue: string, newTag: Tag) => void;
 };
 
 const TagContext = createContext<TagContextType | undefined>(undefined);
@@ -34,6 +37,8 @@ export function TagProvider({ children }: { children: ReactNode }) {
     }
   });
 
+  const { tasks, setTasks } = useTasks();
+
   useEffect(() => {
     try {
       localStorage.setItem("tags", JSON.stringify(tags));
@@ -52,8 +57,34 @@ export function TagProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const deleteTag = (id: string) => {
+    const updatedTags = tags.filter((t) => t.id !== id);
+    setTags(updatedTags);
+
+    const updatedTasks = tasks.map((task) => ({
+      ...task,
+      tags: task.tags ? task.tags.filter((tag) => tag !== id) : [],
+    }));
+    setTasks(updatedTasks);
+    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+  };
+
+  const editTag = (oldValue: string, newTag: Tag) => {
+    const updatedTags = tags.map((t) => (t.id === oldValue ? newTag : t));
+    setTags(updatedTags);
+
+    const updatedTasks = tasks.map((task) => ({
+      ...task,
+      tags: task.tags
+        ? task.tags.map((tag) => (tag === oldValue ? newTag.id : tag))
+        : [],
+    }));
+    setTasks(updatedTasks);
+    localStorage.setItem("tasks", JSON.stringify(updatedTasks));
+  };
+
   return (
-    <TagContext.Provider value={{ tags, addTag, setTags }}>
+    <TagContext.Provider value={{ tags, addTag, setTags, deleteTag, editTag }}>
       {children}
     </TagContext.Provider>
   );
