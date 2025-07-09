@@ -9,7 +9,6 @@ type Props = {
 export default function EditTagsModal({ isOpen, onClose }: Props) {
   const { tags, deleteTag, editTag } = useTags();
   const [editIndex, setEditIndex] = useState<number | null>(null);
-  const [editedLabel, setEditedLabel] = useState("");
   const [editedValue, setEditedValue] = useState("");
 
   if (!isOpen) return null;
@@ -17,27 +16,24 @@ export default function EditTagsModal({ isOpen, onClose }: Props) {
   const handleEditClick = (index: number) => {
     setEditIndex(index);
     setEditedValue(tags[index].id);
-    setEditedLabel(tags[index].label);
   };
 
   const handleSave = () => {
-    if (!editedLabel.trim() || !editedValue.trim()) return;
+    if (!editedValue.trim()) return;
 
     const oldValue = tags[editIndex!].id;
 
     editTag(oldValue, {
       id: editedValue.trim(),
-      label: editedLabel.trim(),
+      label: editedValue.trim(),
     });
 
     setEditIndex(null);
-    setEditedLabel("");
     setEditedValue("");
   };
 
   const handleCancel = () => {
     setEditIndex(null);
-    setEditedLabel("");
     setEditedValue("");
   };
 
@@ -79,9 +75,7 @@ export default function EditTagsModal({ isOpen, onClose }: Props) {
                   </div>
                 ) : (
                   <>
-                    <span className="font-medium text-gray-700">
-                      {tag.id}
-                    </span>
+                    <span className="font-medium text-gray-700">{tag.id}</span>
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => handleEditClick(index)}
