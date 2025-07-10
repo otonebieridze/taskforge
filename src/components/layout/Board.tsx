@@ -83,6 +83,12 @@ export default function Board() {
           </button>
         </div>
 
+        {selectedTagOptions.length > 0 && (
+          <span className="text-sm text-gray-600 ml-auto">
+            Filtered: {filteredTasks.length} of {tasks.length} tasks
+          </span>
+        )}
+
         <EditTagsModal
           isOpen={showEditTags}
           onClose={() => setShowEditTags(false)}
