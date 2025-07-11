@@ -1,8 +1,17 @@
 import { useState } from "react";
 import { FaCalendarAlt, FaPlus, FaSun, FaMoon } from "react-icons/fa";
+import { useTasks } from "../../context/TaskContext";
 
 export default function Sidebar() {
   const [isDark, setIsDark] = useState(false);
+  const { tasks } = useTasks();
+
+  const planning = tasks.filter((t) => t.status === "planning").length;
+  const inProgress = tasks.filter((t) => t.status === "in-progress").length;
+  const done = tasks.filter((t) => t.status === "done").length;
+  const total = tasks.length;
+
+  const progress = total === 0 ? 0 : Math.round((done / total) * 100);
 
   return (
     <div className="w-64 bg-white p-4 border-r shadow-sm h-screen flex flex-col justify-between dark:bg-gray-900 dark:text-white">
@@ -35,18 +44,36 @@ export default function Sidebar() {
         </div>
 
         <div className="mb-6">
-          <h3 className="text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">
-            Progress
+          <h3 className="text-sm font-medium text-gray-500 mb-1">
+            Progress Summary
           </h3>
-          <div className="w-full bg-gray-200 h-2 rounded-lg mb-1">
-            <div
-              className="bg-blue-500 h-2 rounded-lg"
-              style={{ width: "60%" }}
-            ></div>
+          <div className="text-xs text-gray-600 space-y-1">
+            <div className="flex justify-between">
+              <span>Planning</span>
+              <span>{planning}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>In Progress</span>
+              <span>{inProgress}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Done</span>
+              <span>{done}</span>
+            </div>
           </div>
-          <p className="text-xs text-gray-500 dark:text-gray-400">
-            6 of 10 tasks completed
-          </p>
+
+          <div className="mt-3">
+            <div className="flex justify-between text-xs text-gray-600 mb-1">
+              <span>Completion</span>
+              <span>{progress}%</span>
+            </div>
+            <div className="w-full h-2 bg-gray-200 rounded-full">
+              <div
+                className="h-2 bg-blue-500 rounded-full transition-all duration-300"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+          </div>
         </div>
 
         <div className="mb-6">
