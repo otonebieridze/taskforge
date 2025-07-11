@@ -1,9 +1,12 @@
 import { useState } from "react";
-import { FaCalendarAlt, FaPlus, FaSun, FaMoon } from "react-icons/fa";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
+import { FaPlus, FaSun, FaMoon } from "react-icons/fa";
 import { useTasks } from "../../context/TaskContext";
 
 export default function Sidebar() {
   const [isDark, setIsDark] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const { tasks } = useTasks();
 
   const planning = tasks.filter((t) => t.status === "planning").length;
@@ -13,35 +16,20 @@ export default function Sidebar() {
 
   const progress = total === 0 ? 0 : Math.round((done / total) * 100);
 
+  const tasksDueToday = tasks.filter((task) => {
+    if (!task.dueDate) return false;
+    const taskDate = new Date(task.dueDate);
+    return (
+      selectedDate && taskDate.toDateString() === selectedDate.toDateString()
+    );
+  });
+
   return (
-    <div className="w-64 bg-white p-4 border-r shadow-sm h-screen flex flex-col justify-between dark:bg-gray-900 dark:text-white">
+    <div className="w-64 bg-white p-4 border-r shadow-sm h-screen flex flex-col justify-between">
       <div>
-        <h2 className="text-2xl font-bold mb-6 text-blue-600 dark:text-blue-400">
+        <h2 className="text-2xl font-bold mb-6 text-blue-600">
           TaskForge
         </h2>
-
-        <div className="mb-6">
-          <h3 className="text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">
-            Tags
-          </h3>
-          <div className="space-y-1">
-            <div className="cursor-pointer text-gray-600 hover:text-blue-600 dark:hover:text-blue-400">
-              # Frontend
-            </div>
-            <div className="cursor-pointer text-gray-600 hover:text-blue-600 dark:hover:text-blue-400">
-              # Backend
-            </div>
-            <div className="cursor-pointer text-gray-600 hover:text-blue-600 dark:hover:text-blue-400">
-              # Urgent
-            </div>
-          </div>
-        </div>
-
-        <div className="mb-6">
-          <button className="text-sm text-blue-600 hover:underline dark:text-blue-400">
-            Edit Tags
-          </button>
-        </div>
 
         <div className="mb-6">
           <h3 className="text-sm font-medium text-gray-500 mb-1">
@@ -77,15 +65,45 @@ export default function Sidebar() {
         </div>
 
         <div className="mb-6">
-          <h3 className="text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">
+          <h3 className="text-sm font-semibold mb-2 text-gray-700">
             Calendar
           </h3>
-          <div className="flex items-center justify-center text-gray-400 text-4xl">
-            <FaCalendarAlt />
-          </div>
-          <p className="text-xs text-center mt-1 text-gray-500 dark:text-gray-400">
-            Coming soon
-          </p>
+          <Calendar
+            onChange={(date) => setSelectedDate(date as Date)}
+            value={selectedDate}
+            tileContent={({ date, view }) => {
+              const hasTasks = tasks.some(
+                (task) =>
+                  task.dueDate &&
+                  new Date(task.dueDate).toDateString() === date.toDateString()
+              );
+              return hasTasks && view === "month" ? (
+                <div className="text-blue-500 text-center text-xs">•</div>
+              ) : null;
+            }}
+            tileClassName={({ date }) => {
+              if (
+                selectedDate &&
+                date.toDateString() === selectedDate.toDateString()
+              ) {
+                return "bg-blue-100";
+              }
+            }}
+            className="rounded-lg shadow-sm border border-gray-200"
+          />
+          {selectedDate && (
+            <div className="mt-2 text-xs text-gray-700">
+              {tasksDueToday.length > 0 ? (
+                <>
+                  {tasksDueToday.length}{" "}
+                  {tasksDueToday.length === 1 ? "task" : "tasks"} due on{" "}
+                  {selectedDate.toDateString()}
+                </>
+              ) : (
+                <>No tasks due on {selectedDate.toDateString()}</>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
@@ -96,7 +114,7 @@ export default function Sidebar() {
 
         <button
           onClick={() => setIsDark(!isDark)}
-          className="w-full flex items-center justify-center px-4 py-2 border rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+          className="w-full flex items-center justify-center px-4 py-2 border rounded-lg text-gray-700 hover:bg-gray-100 transition"
         >
           {isDark ? (
             <>
