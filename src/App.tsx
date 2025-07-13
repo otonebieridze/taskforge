@@ -4,9 +4,9 @@ import Board from "./components/layout/Board";
 
 function App() {
   return (
-    <div className="h-screen bg-gray-100 flex">
+    <div className="w-full min-h-screen bg-gray-100 flex">
       <Sidebar />
-      <div className="flex flex-col flex-1 overflow-hidden">
+      <div className="flex flex-col flex-1 overflow-hidden pl-64">
         <Topbar />
         <Board />
       </div>

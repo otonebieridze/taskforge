@@ -54,10 +54,10 @@ export default function Board() {
   return (
     <>
       <div className="p-4">
-        <h1 className="text-xl font-semibold">Your Tasks</h1>
+        <h1 className="text-xl font-bold text-gray-800">Your Tasks</h1>
         <span className="flex items-center gap-1 text-base text-gray-500 mt-1">
-          <FaLightbulb className="text-yellow-300" />
-          Drag tasks to organize your workflow
+          <FaLightbulb className="text-yellow-400" />
+          <span className="text-sm">Drag tasks to organize your workflow</span>
         </span>
 
         <div className="flex items-center gap-4 mt-4">
@@ -96,7 +96,7 @@ export default function Board() {
       </div>
 
       <DragDropContext onDragEnd={handleDragEnd}>
-        <div className="flex gap-4 overflow-x-auto p-4 items-start">
+        <div className="flex gap-4 p-4 items-start">
           <Column title="Planning" tasks={planning} status="planning" />
           <Column title="In Progress" tasks={inProgress} status="in-progress" />
           <Column title="Done" tasks={done} status="done" />

@@ -25,104 +25,119 @@ export default function Sidebar() {
   });
 
   return (
-    <div className="w-64 bg-white p-4 border-r shadow-sm h-screen flex flex-col justify-between">
+    <div className="w-64 h-screen fixed overflow-y-auto bg-slate-50 p-4 border-r border-gray-200 shadow-sm flex flex-col justify-between">
       <div>
-        <h2 className="text-2xl font-bold mb-6 text-blue-600">
-          TaskForge
-        </h2>
+        <h2 className="text-2xl font-bold mb-6 text-blue-600">TaskForge</h2>
 
-        <div className="mb-6">
-          <h3 className="text-sm font-medium text-gray-500 mb-1">
+        <div className="mb-8">
+          <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
             Progress Summary
           </h3>
-          <div className="text-xs text-gray-600 space-y-1">
-            <div className="flex justify-between">
-              <span>Planning</span>
-              <span>{planning}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>In Progress</span>
-              <span>{inProgress}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Done</span>
-              <span>{done}</span>
-            </div>
-          </div>
 
-          <div className="mt-3">
-            <div className="flex justify-between text-xs text-gray-600 mb-1">
-              <span>Completion</span>
-              <span>{progress}%</span>
+          <div className="bg-gray-50 p-4 rounded-xl shadow-sm space-y-3">
+            <div className="flex justify-between text-sm text-gray-700">
+              <span className="font-medium">Planning</span>
+              <span className="text-gray-600">{planning}</span>
             </div>
-            <div className="w-full h-2 bg-gray-200 rounded-full">
-              <div
-                className="h-2 bg-blue-500 rounded-full transition-all duration-300"
-                style={{ width: `${progress}%` }}
-              />
+            <div className="flex justify-between text-sm text-gray-700">
+              <span className="font-medium">In Progress</span>
+              <span className="text-gray-600">{inProgress}</span>
+            </div>
+            <div className="flex justify-between text-sm text-gray-700">
+              <span className="font-medium">Done</span>
+              <span className="text-gray-600">{done}</span>
+            </div>
+
+            <div className="mt-4">
+              <div className="flex justify-between text-xs text-gray-500 mb-1">
+                <span>Completion</span>
+                <span>{progress}%</span>
+              </div>
+              <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-blue-400 to-blue-600 rounded-full transition-all duration-500"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="mb-6">
-          <h3 className="text-sm font-semibold mb-2 text-gray-700">
+        <div className="mb-8">
+          <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
             Calendar
           </h3>
-          <Calendar
-            onChange={(date) => setSelectedDate(date as Date)}
-            value={selectedDate}
-            tileContent={({ date, view }) => {
-              const hasTasks = tasks.some(
-                (task) =>
-                  task.dueDate &&
-                  new Date(task.dueDate).toDateString() === date.toDateString()
-              );
-              return hasTasks && view === "month" ? (
-                <div className="text-blue-500 text-center text-xs">•</div>
-              ) : null;
-            }}
-            tileClassName={({ date }) => {
-              if (
-                selectedDate &&
-                date.toDateString() === selectedDate.toDateString()
-              ) {
-                return "bg-blue-100";
-              }
-            }}
-            className="rounded-lg shadow-sm border border-gray-200"
-          />
+
+          <div className="bg-white">
+            <Calendar
+              onChange={(date) => setSelectedDate(date as Date)}
+              value={selectedDate}
+              className="w-full text-sm"
+              tileContent={({ date, view }) => {
+                const hasTasks = tasks.some(
+                  (task) =>
+                    task.dueDate &&
+                    new Date(task.dueDate).toDateString() ===
+                      date.toDateString()
+                );
+                return hasTasks && view === "month" ? (
+                  <div className="text-blue-500 text-center text-xs mt-1">
+                    •
+                  </div>
+                ) : null;
+              }}
+              tileClassName={({ date }) => {
+                if (
+                  selectedDate &&
+                  date.toDateString() === selectedDate.toDateString()
+                ) {
+                  return "bg-blue-100 rounded-md";
+                }
+              }}
+            />
+          </div>
+
           {selectedDate && (
-            <div className="mt-2 text-xs text-gray-700">
+            <div className="mt-3 text-sm text-gray-700 px-1">
               {tasksDueToday.length > 0 ? (
                 <>
-                  {tasksDueToday.length}{" "}
+                  <span className="font-medium text-blue-600">
+                    {tasksDueToday.length}
+                  </span>{" "}
                   {tasksDueToday.length === 1 ? "task" : "tasks"} due on{" "}
-                  {selectedDate.toDateString()}
+                  <span className="font-medium">
+                    {selectedDate.toDateString()}
+                  </span>
                 </>
               ) : (
-                <>No tasks due on {selectedDate.toDateString()}</>
+                <>
+                  No tasks due on{" "}
+                  <span className="font-medium">
+                    {selectedDate.toDateString()}
+                  </span>
+                </>
               )}
             </div>
           )}
         </div>
       </div>
 
-      <div className="space-y-4">
-        <button className="w-full flex items-center justify-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow transition">
-          <FaPlus className="mr-2" /> Add Task
+      <div className="space-y-3">
+        <button className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl shadow-md transition-all duration-400 cursor-pointer">
+          <FaPlus className="text-sm" /> Add Task
         </button>
 
         <button
           onClick={() => setIsDark(!isDark)}
-          className="w-full flex items-center justify-center px-4 py-2 border rounded-lg text-gray-700 hover:bg-gray-100 transition"
+          className="w-full flex items-center justify-center gap-2 px-4 py-2 mb-4 border border-gray-300 rounded-xl text-gray-700 hover:bg-gray-200 font-medium transition-all duration-400 cursor-pointer"
         >
           {isDark ? (
             <>
-              <FaSun className="mr-2" /> Light Mode
+              <FaSun className="text-sm text-yellow-500" /> Light Mode
             </>
           ) : (
             <>
-              <FaMoon className="mr-2" /> Dark Mode
+              <FaMoon className="text-sm text-blue-500" /> Dark Mode
             </>
           )}
         </button>
