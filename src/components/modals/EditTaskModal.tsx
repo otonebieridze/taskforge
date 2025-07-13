@@ -1,59 +1,68 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import type { Task } from "../../types/task";
 import { useTasks } from "../../context/TaskContext";
 import CreatableSelect from "react-select/creatable";
 import { useTags } from "../../context/TagContext";
+import { useForm, Controller } from "react-hook-form";
 
 type Props = {
   task: Task | null;
   onClose: () => void;
 };
 
+type FormData = {
+  title: string;
+  description: string;
+  dueDate: string;
+  status: Task["status"];
+  tags: { label: string; value: string }[];
+};
+
 export default function EditTaskModal({ task, onClose }: Props) {
   const { updateTask } = useTasks();
   const { tags: availableTags, addTag } = useTags();
 
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [status, setStatus] = useState<"planning" | "in-progress" | "done">(
-    "planning"
-  );
-  const [dueDate, setDueDate] = useState("");
-  const [selectedTags, setSelectedTags] = useState<
-    { label: string; value: string }[]
-  >([]);
-
-  const tagOptions = availableTags.map((tag) => ({
-    label: tag.label,
-    value: tag.id,
-  }));
+  const {
+    register,
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors },
+  } = useForm<FormData>({
+    defaultValues: {
+      title: "",
+      description: "",
+      dueDate: "",
+      status: "planning",
+      tags: [],
+    },
+  });
 
   useEffect(() => {
     if (task) {
-      setTitle(task.title);
-      setDescription(task.description || "");
-      setDueDate(task.dueDate || "");
-      setSelectedTags(
-        (task.tags || []).map((tag) => ({
+      reset({
+        title: task.title,
+        description: task.description || "",
+        dueDate: task.dueDate || "",
+        status: task.status,
+        tags: (task.tags || []).map((tag) => ({
           label: tag,
           value: tag,
-        }))
-      );
-      setStatus(task.status);
+        })),
+      });
     }
-  }, [task]);
+  }, [task, reset]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = (data: FormData) => {
     if (!task) return;
 
     const updatedTask: Task = {
       ...task,
-      title,
-      description,
-      dueDate,
-      tags: selectedTags.map((tag) => tag.value),
-      status,
+      title: data.title,
+      description: data.description,
+      dueDate: data.dueDate,
+      status: data.status,
+      tags: data.tags.map((tag) => tag.value),
     };
 
     updateTask(updatedTask);
@@ -63,61 +72,101 @@ export default function EditTaskModal({ task, onClose }: Props) {
   if (!task) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-white/30">
-      <div className="bg-white p-6 rounded-2xl shadow-xl w-full max-w-md border border-gray-200">
-        <h2 className="text-xl font-semibold mb-4 text-gray-800">Edit Task</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            autoFocus
-            type="text"
-            placeholder="Task title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2"
-          />
-          <textarea
-            placeholder="Description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2"
-            rows={3}
-          />
-          <input
-            type="date"
-            value={dueDate}
-            onChange={(e) => setDueDate(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2"
-          />
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Tags
-          </label>
-          <CreatableSelect
-            isMulti
-            options={tagOptions}
-            value={selectedTags}
-            onChange={(newValue) =>
-              setSelectedTags(newValue as { label: string; value: string }[])
-            }
-            onCreateOption={(label) => {
-              addTag(label);
-              setSelectedTags((prev) => [
-                ...prev,
-                { label, value: label.toLowerCase() },
-              ]);
-            }}
-            classNamePrefix="react-select"
-          />
-          <select
-            value={status}
-            onChange={(e) => setStatus(e.target.value as Task["status"])}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2"
-          >
-            <option value="planning">Planning</option>
-            <option value="in-progress">In Progress</option>
-            <option value="done">Done</option>
-          </select>
+    <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/40">
+      <div className="bg-white p-6 rounded-2xl shadow-xl w-full max-w-md border border-gray-200 max-h-[95vh] overflow-y-auto">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Title
+            </label>
+            <input
+              autoFocus
+              type="text"
+              placeholder="Task title"
+              {...register("title", { required: "Title is required" })}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              aria-invalid={!!errors.title}
+            />
+            {errors.title && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.title.message}
+              </p>
+            )}
+          </div>
 
-          <div className="flex justify-end gap-2 pt-2">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Description
+            </label>
+            <textarea
+              placeholder="Description (optional)"
+              {...register("description")}
+              rows={2}
+              className="w-full max-h-24 overflow-auto border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Due Date
+            </label>
+            <input
+              type="date"
+              {...register("dueDate", { required: "Due date is required" })}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2"
+              aria-invalid={!!errors.dueDate}
+            />
+            {errors.dueDate && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.dueDate.message}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Tags
+            </label>
+            <Controller
+              control={control}
+              name="tags"
+              render={({ field: { onChange, value } }) => (
+                <CreatableSelect
+                  isMulti
+                  options={availableTags.map((tag) => ({
+                    label: tag.label,
+                    value: tag.id,
+                  }))}
+                  value={value}
+                  onChange={(newValue) => onChange(newValue)}
+                  onCreateOption={(label) => {
+                    addTag(label);
+                    onChange([
+                      ...(value || []),
+                      { label, value: label.toLowerCase() },
+                    ]);
+                  }}
+                  classNamePrefix="react-select"
+                />
+              )}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Status
+            </label>
+            <select
+              {...register("status")}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="planning">Planning</option>
+              <option value="in-progress">In Progress</option>
+              <option value="done">Done</option>
+            </select>
+          </div>
+
+          <div className="flex justify-end gap-3 pt-2">
             <button
               type="button"
               onClick={onClose}

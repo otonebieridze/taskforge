@@ -1,115 +1,160 @@
-import { useState } from "react";
 import { useTasks } from "../../context/TaskContext";
 import CreatableSelect from "react-select/creatable";
-import type { Task } from "../../types/task";
 import { useTags } from "../../context/TagContext";
+import type { Task } from "../../types/task";
+import { useForm, Controller } from "react-hook-form";
 
 type Props = {
   isOpen: boolean;
   onClose: () => void;
 };
 
+type FormData = {
+  title: string;
+  description: string;
+  dueDate: string;
+  status: Task["status"];
+  tags: { label: string; value: string }[];
+};
+
 export default function CreateTaskModal({ isOpen, onClose }: Props) {
   const { addTask } = useTasks();
   const { tags: availableTags, addTag } = useTags();
 
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [status, setStatus] = useState<"planning" | "in-progress" | "done">(
-    "planning"
-  );
-  const [dueDate, setDueDate] = useState("");
-  const [selectedTags, setSelectedTags] = useState<
-    { label: string; value: string }[]
-  >([]);
+  const {
+    register,
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors },
+  } = useForm<FormData>({
+    defaultValues: {
+      title: "",
+      description: "",
+      dueDate: "",
+      status: "planning",
+      tags: [],
+    },
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!title.trim()) return;
+  const onSubmit = (data: FormData) => {
+    const tagIds = data.tags.map((tag) => tag.value);
 
-    const tags = selectedTags.map((tag) => tag.value);
-
-    selectedTags.forEach((tag) => {
+    data.tags.forEach((tag) => {
       const exists = availableTags.some((t) => t.id === tag.value);
       if (!exists) {
         addTag(tag.label);
       }
     });
 
-    addTask(title.trim(), status, description, dueDate, tags);
-    setTitle("");
-    setDescription("");
-    setStatus("planning");
-    setDueDate("");
-    setSelectedTags([]);
+    addTask(
+      data.title.trim(),
+      data.status,
+      data.description,
+      data.dueDate,
+      tagIds
+    );
+
+    reset();
     onClose();
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-white/30">
-      <div className="bg-white p-6 rounded-2xl shadow-xl w-full max-w-md border border-gray-200">
-        <h2 className="text-xl font-semibold mb-4 text-gray-800">
-          Create New Task
-        </h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            autoFocus
-            type="text"
-            placeholder="Task title"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+    <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/40">
+      <div className="bg-white p-6 rounded-2xl shadow-xl w-full max-w-md border border-gray-200 max-h-[95vh] overflow-y-auto">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Title
+            </label>
+            <input
+              autoFocus
+              type="text"
+              placeholder="Task title"
+              {...register("title", { required: "Title is required" })}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              aria-invalid={!!errors.title}
+            />
+            {errors.title && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.title.message}
+              </p>
+            )}
+          </div>
 
-          <textarea
-            placeholder="Description (optional)"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            rows={3}
-          />
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Description
+            </label>
+            <textarea
+              placeholder="Description (optional)"
+              {...register("description")}
+              rows={2}
+              className="w-full max-h-24 overflow-auto border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
 
-          <input
-            type="date"
-            value={dueDate}
-            onChange={(e) => setDueDate(e.target.value)}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2"
-          />
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Due Date
+            </label>
+            <input
+              type="date"
+              {...register("dueDate", { required: "Due date is required" })}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2"
+              aria-invalid={!!errors.dueDate}
+            />
+            {errors.dueDate && (
+              <p className="text-red-500 text-sm mt-1">
+                {errors.dueDate.message}
+              </p>
+            )}
+          </div>
 
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Tags
-          </label>
-          <CreatableSelect
-            isMulti
-            options={availableTags.map((tag) => ({
-              label: tag.label,
-              value: tag.id,
-            }))}
-            value={selectedTags}
-            onChange={(newValue) =>
-              setSelectedTags(newValue as { label: string; value: string }[])
-            }
-            onCreateOption={(inputValue) => {
-              const newTag = {
-                label: inputValue,
-                value: inputValue.toLowerCase(),
-              };
-              setSelectedTags((prev) => [...prev, newTag]);
-            }}
-            classNamePrefix="react-select"
-          />
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Tags
+            </label>
+            <Controller
+              control={control}
+              name="tags"
+              render={({ field }) => (
+                <CreatableSelect
+                  isMulti
+                  classNamePrefix="react-select"
+                  options={availableTags.map((tag) => ({
+                    label: tag.label,
+                    value: tag.id,
+                  }))}
+                  value={field.value}
+                  onChange={field.onChange}
+                  onCreateOption={(inputValue) => {
+                    const newTag = {
+                      label: inputValue,
+                      value: inputValue.toLowerCase(),
+                    };
+                    field.onChange([...field.value, newTag]);
+                  }}
+                />
+              )}
+            />
+          </div>
 
-          <select
-            value={status}
-            onChange={(e) => setStatus(e.target.value as Task["status"])}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="planning">Planning</option>
-            <option value="in-progress">In Progress</option>
-            <option value="done">Done</option>
-          </select>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Status
+            </label>
+            <select
+              {...register("status")}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="planning">Planning</option>
+              <option value="in-progress">In Progress</option>
+              <option value="done">Done</option>
+            </select>
+          </div>
 
           <div className="flex justify-end gap-3 pt-2">
             <button
@@ -123,7 +168,7 @@ export default function CreateTaskModal({ isOpen, onClose }: Props) {
               type="submit"
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition cursor-pointer"
             >
-              Create
+              Create a new task
             </button>
           </div>
         </form>
