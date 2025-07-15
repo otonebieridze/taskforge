@@ -1,1 +1,35 @@
 @import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+.react-calendar {
+  background-color: white;
+  color: black;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+}
+
+.dark .react-calendar {
+  background-color: #1f2937;
+  color: #d1d5db;
+}
+
+.dark .react-calendar__tile--now {
+  background: #2563eb;
+  color: white;
+}
+
+.dark .react-calendar__tile--active {
+  background: #1e40af;
+  color: white;
+}
+
+.dark .react-calendar__tile:hover {
+  color: red;
+}
+
+.dark .react-calendar__navigation__label:hover,
+.dark .react-calendar__navigation__arrow:hover {
+  color: red;
+  cursor: pointer;
+}

@@ -20,10 +20,10 @@ export default function TaskCard({ task }: Props) {
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.97 }}
         onClick={() => setIsEditing(true)}
-        className="bg-white p-4 rounded-xl shadow-sm hover:shadow-md border border-gray-200 transition duration-200 space-y-2 cursor-pointer select-none"
+        className="bg-white dark:bg-zinc-900 p-4 rounded-xl shadow-sm hover:shadow-md border border-gray-200 dark:border-zinc-700 transition duration-300 space-y-2 cursor-pointer select-none"
       >
         <div className="w-full flex items-center justify-between">
-          <h3 className="text-base font-semibold text-gray-800">
+          <h3 className="text-base font-semibold text-gray-800 dark:text-zinc-100">
             {task.title}
           </h3>
           <FaTrashAlt
@@ -34,11 +34,13 @@ export default function TaskCard({ task }: Props) {
         </div>
 
         {task.description && (
-          <p className="text-sm text-gray-600">{task.description}</p>
+          <p className="text-sm text-gray-600 dark:text-zinc-300">
+            {task.description}
+          </p>
         )}
 
         {task.dueDate && (
-          <p className="text-xs text-gray-500 italic">
+          <p className="text-xs text-gray-500 dark:text-zinc-400 italic">
             Due: {new Date(task.dueDate).toLocaleDateString()}
           </p>
         )}
@@ -48,7 +50,7 @@ export default function TaskCard({ task }: Props) {
             {task.tags.map((tag, index) => (
               <span
                 key={index}
-                className="text-xs font-medium bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full"
+                className="text-xs font-medium bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 px-2 py-0.5 rounded-full"
               >
                 #{tag}
               </span>

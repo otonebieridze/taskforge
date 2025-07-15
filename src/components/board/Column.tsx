@@ -10,8 +10,8 @@ type Props = {
 
 export default function Column({ title, tasks, status }: Props) {
   return (
-    <div className="bg-white w-72 p-4 rounded-2xl shadow-md border border-zinc-200 flex-shrink-0">
-      <h2 className="font-semibold text-lg text-zinc-800 mb-4">
+    <div className="bg-white dark:bg-zinc-800 w-72 p-4 rounded-2xl shadow-md border border-zinc-200 dark:border-zinc-700 transition-colors duration-300 flex-shrink-0">
+      <h2 className="font-semibold text-lg text-zinc-800 dark:text-zinc-100 mb-4">
         {title}
       </h2>
 
@@ -21,14 +21,14 @@ export default function Column({ title, tasks, status }: Props) {
             ref={provided.innerRef}
             {...provided.droppableProps}
             className={`rounded-xl p-2 min-h-[120px] space-y-3 transition-colors duration-200 border-2 border-dashed
-        ${
-          snapshot.isDraggingOver
-            ? "border-blue-400 bg-blue-50"
-            : "border-transparent"
-        }`}
+          ${
+            snapshot.isDraggingOver
+              ? "border-blue-400 bg-blue-50 dark:bg-blue-900/30"
+              : "border-transparent"
+          }`}
           >
             {tasks.length === 0 && (
-              <p className="text-sm text-zinc-400 italic text-center py-6">
+              <p className="text-sm text-zinc-400 dark:text-zinc-500 italic text-center py-6">
                 No tasks here
               </p>
             )}

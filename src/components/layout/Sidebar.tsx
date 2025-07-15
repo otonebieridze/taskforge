@@ -1,13 +1,16 @@
 import { useState } from "react";
+import { FaPlus, FaSun, FaMoon } from "react-icons/fa";
+
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
-import { FaPlus, FaSun, FaMoon } from "react-icons/fa";
+
 import { useTasks } from "../../context/TaskContext";
+import { useTheme } from "../../context/ThemeContext";
 
 export default function Sidebar() {
-  const [isDark, setIsDark] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const { tasks } = useTasks();
+  const { isDark, setIsDark } = useTheme();
 
   const planning = tasks.filter((t) => t.status === "planning").length;
   const inProgress = tasks.filter((t) => t.status === "in-progress").length;
@@ -25,37 +28,43 @@ export default function Sidebar() {
   });
 
   return (
-    <div className="w-64 h-screen fixed overflow-y-auto bg-slate-50 p-4 border-r border-gray-200 shadow-sm flex flex-col justify-between">
+    <div className="w-72 h-screen fixed overflow-y-auto bg-slate-50 dark:bg-gray-900 p-4 border-r border-gray-200 dark:border-gray-700 transition-colors duration-300 shadow-sm flex flex-col justify-between">
       <div>
-        <h2 className="text-2xl font-bold mb-6 text-blue-600">TaskForge</h2>
+        <h2 className="text-2xl font-bold mb-6 text-blue-600 dark:text-blue-400">
+          TaskForge
+        </h2>
 
         <div className="mb-8">
-          <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+          <h3 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-3">
             Progress Summary
           </h3>
 
-          <div className="bg-gray-50 p-4 rounded-xl shadow-sm space-y-3">
-            <div className="flex justify-between text-sm text-gray-700">
+          <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-xl shadow-sm space-y-3">
+            <div className="flex justify-between text-sm text-gray-700 dark:text-gray-300">
               <span className="font-medium">Planning</span>
-              <span className="text-gray-600">{planning}</span>
+              <span className="text-gray-600 dark:text-gray-400">
+                {planning}
+              </span>
             </div>
-            <div className="flex justify-between text-sm text-gray-700">
+            <div className="flex justify-between text-sm text-gray-700 dark:text-gray-300">
               <span className="font-medium">In Progress</span>
-              <span className="text-gray-600">{inProgress}</span>
+              <span className="text-gray-600 dark:text-gray-400">
+                {inProgress}
+              </span>
             </div>
-            <div className="flex justify-between text-sm text-gray-700">
+            <div className="flex justify-between text-sm text-gray-700 dark:text-gray-300">
               <span className="font-medium">Done</span>
-              <span className="text-gray-600">{done}</span>
+              <span className="text-gray-600 dark:text-gray-400">{done}</span>
             </div>
 
             <div className="mt-4">
-              <div className="flex justify-between text-xs text-gray-500 mb-1">
+              <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
                 <span>Completion</span>
                 <span>{progress}%</span>
               </div>
-              <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
+              <div className="w-full h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-blue-400 to-blue-600 rounded-full transition-all duration-500"
+                  className="h-full bg-gradient-to-r from-blue-400 to-blue-600 rounded-full"
                   style={{ width: `${progress}%` }}
                 />
               </div>
@@ -64,11 +73,11 @@ export default function Sidebar() {
         </div>
 
         <div className="mb-8">
-          <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">
+          <h3 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-3">
             Calendar
           </h3>
 
-          <div className="bg-white">
+          <div className="bg-white dark:bg-gray-800">
             <Calendar
               onChange={(date) => setSelectedDate(date as Date)}
               value={selectedDate}
@@ -91,17 +100,17 @@ export default function Sidebar() {
                   selectedDate &&
                   date.toDateString() === selectedDate.toDateString()
                 ) {
-                  return "bg-blue-100 rounded-md";
+                  return "bg-blue-100 dark:bg-blue-800 rounded-md";
                 }
               }}
             />
           </div>
 
           {selectedDate && (
-            <div className="mt-3 text-sm text-gray-700 px-1">
+            <div className="mt-3 text-sm text-gray-700 dark:text-gray-300 px-1">
               {tasksDueToday.length > 0 ? (
                 <>
-                  <span className="font-medium text-blue-600">
+                  <span className="font-medium text-blue-600 dark:text-blue-400">
                     {tasksDueToday.length}
                   </span>{" "}
                   {tasksDueToday.length === 1 ? "task" : "tasks"} due on{" "}
@@ -123,13 +132,13 @@ export default function Sidebar() {
       </div>
 
       <div className="space-y-3">
-        <button className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl shadow-md transition-all duration-400 cursor-pointer">
+        <button className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl shadow-md cursor-pointer">
           <FaPlus className="text-sm" /> Add Task
         </button>
 
         <button
           onClick={() => setIsDark(!isDark)}
-          className="w-full flex items-center justify-center gap-2 px-4 py-2 mb-4 border border-gray-300 rounded-xl text-gray-700 hover:bg-gray-200 font-medium transition-all duration-400 cursor-pointer"
+          className="w-full flex items-center justify-center gap-2 px-4 py-2 mb-4 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 font-medium cursor-pointer"
         >
           {isDark ? (
             <>

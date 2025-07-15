@@ -1,23 +1,60 @@
 import { useState, useMemo } from "react";
+
 import { FaLightbulb } from "react-icons/fa";
 import { DragDropContext } from "@hello-pangea/dnd";
 import type { DropResult } from "@hello-pangea/dnd";
 
-import Column from "../board/Column";
 import { useTasks } from "../../context/TaskContext";
 import { useTags } from "../../context/TagContext";
+import { useTheme } from "../../context/ThemeContext";
+
 import type { Task } from "../../types/task";
+import Column from "../board/Column";
 import EditTagsModal from "../modals/EditTagsModal";
 import Select from "react-select";
 
 export default function Board() {
   const { tasks, updateTask } = useTasks();
   const { tags: allTags } = useTags();
+  const { isDark } = useTheme();
 
   const [showEditTags, setShowEditTags] = useState(false);
   const [selectedTagOptions, setSelectedTagOptions] = useState<
     { label: string; value: string }[]
   >([]);
+
+  const customSelectStyles = {
+    control: (base: any) => ({
+      ...base,
+      backgroundColor: isDark ? "#1f2937" : "#ffffff",
+      borderColor: isDark ? "#374151" : "#d1d5db",
+      color: isDark ? "#f9fafb" : "#111827",
+    }),
+    menu: (base: any) => ({
+      ...base,
+      backgroundColor: isDark ? "#1f2937" : "#ffffff",
+      color: isDark ? "#f9fafb" : "#111827",
+    }),
+    option: (base: any, state: any) => ({
+      ...base,
+      backgroundColor: state.isFocused
+        ? isDark
+          ? "#374151"
+          : "#e5e7eb"
+        : isDark
+        ? "#1f2937"
+        : "#ffffff",
+      color: isDark ? "#f9fafb" : "#111827",
+    }),
+    multiValue: (base: any) => ({
+      ...base,
+      backgroundColor: isDark ? "#374151" : "#e5e7eb",
+    }),
+    multiValueLabel: (base: any) => ({
+      ...base,
+      color: isDark ? "#f9fafb" : "#111827",
+    }),
+  };
 
   const selectedTagIds = selectedTagOptions.map((tag) => tag.value);
 
@@ -53,9 +90,11 @@ export default function Board() {
 
   return (
     <>
-      <div className="p-4">
-        <h1 className="text-xl font-bold text-gray-800">Your Tasks</h1>
-        <span className="flex items-center gap-1 text-base text-gray-500 mt-1">
+      <div className="p-4 transition-colors duration-300">
+        <h1 className="text-xl font-bold text-gray-800 dark:text-gray-100">
+          Your Tasks
+        </h1>
+        <span className="flex items-center gap-1 text-base text-gray-500 dark:text-gray-400 mt-1">
           <FaLightbulb className="text-yellow-400" />
           <span className="text-sm">Drag tasks to organize your workflow</span>
         </span>
@@ -73,18 +112,19 @@ export default function Board() {
             className="min-w-[200px] max-w-xs text-sm"
             classNamePrefix="react-select"
             placeholder="Filter by tags"
+            styles={customSelectStyles}
           />
 
           <button
             onClick={() => setShowEditTags(true)}
-            className="text-sm text-blue-600 hover:underline"
+            className="text-sm text-blue-600 dark:text-blue-400 hover:underline"
           >
             Edit Tags
           </button>
         </div>
 
         {selectedTagOptions.length > 0 && (
-          <span className="text-sm text-gray-600 ml-auto">
+          <span className="text-sm text-gray-600 dark:text-gray-300 ml-auto">
             Filtered: {filteredTasks.length} of {tasks.length} tasks
           </span>
         )}

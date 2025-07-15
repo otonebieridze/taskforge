@@ -4,12 +4,15 @@ import "./index.css";
 import App from "./App.tsx";
 import { TaskProvider } from "./context/TaskContext.tsx";
 import { TagProvider } from "./context/TagContext.tsx";
+import { ThemeProvider } from "./context/ThemeContext.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <TaskProvider>
       <TagProvider>
-        <App />
+        <ThemeProvider>
+          <App />
+        </ThemeProvider>
       </TagProvider>
     </TaskProvider>
   </StrictMode>
