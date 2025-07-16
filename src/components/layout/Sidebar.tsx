@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { FaPlus, FaSun, FaMoon } from "react-icons/fa";
+import CreateTaskModal from "../modals/CreateTaskModal";
 
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
@@ -9,6 +10,7 @@ import { useTheme } from "../../context/ThemeContext";
 
 export default function Sidebar() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { tasks } = useTasks();
   const { isDark, setIsDark } = useTheme();
 
@@ -132,7 +134,10 @@ export default function Sidebar() {
       </div>
 
       <div className="space-y-3">
-        <button className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl shadow-md cursor-pointer">
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl shadow-md cursor-pointer"
+        >
           <FaPlus className="text-sm" /> Add Task
         </button>
 
@@ -151,6 +156,11 @@ export default function Sidebar() {
           )}
         </button>
       </div>
+
+      <CreateTaskModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 }
