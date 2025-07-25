@@ -5,9 +5,11 @@ import { useTags } from "../../context/TagContext";
 import { useTheme } from "../../context/ThemeContext";
 
 import CreatableSelect from "react-select/creatable";
+import { components, type InputProps } from "react-select";
+
 import { useForm, Controller } from "react-hook-form";
 import type { Task } from "../../types/task";
-import { getCustomSelectStyles } from "../../styles/selectStyles";
+import { getCustomSelectStyles, type OptionType } from "../../styles/selectStyles";
 
 type Props = {
   task: Task | null;
@@ -26,6 +28,12 @@ export default function EditTaskModal({ task, onClose }: Props) {
   const { updateTask } = useTasks();
   const { tags: availableTags, addTag } = useTags();
   const { isDark } = useTheme();
+
+  const customSelectStyles = getCustomSelectStyles(isDark);
+
+  const CustomInput = (props: InputProps<OptionType, true>) => {
+    return <components.Input {...props} maxLength={20} />;
+  };
 
   const {
     register,
@@ -57,8 +65,6 @@ export default function EditTaskModal({ task, onClose }: Props) {
       });
     }
   }, [task, reset]);
-
-  const customSelectStyles = getCustomSelectStyles(isDark);
 
   const onSubmit = (data: FormData) => {
     if (!task) return;
@@ -140,6 +146,7 @@ export default function EditTaskModal({ task, onClose }: Props) {
               render={({ field: { onChange, value } }) => (
                 <CreatableSelect
                   isMulti
+                  components={{ Input: CustomInput }}
                   options={availableTags.map((tag) => ({
                     label: tag.label,
                     value: tag.id,

@@ -1,6 +1,6 @@
 import type { StylesConfig, GroupBase } from "react-select";
 
-type OptionType = {
+export type OptionType = {
   label: string;
   value: string;
 };

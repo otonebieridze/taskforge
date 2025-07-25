@@ -61,6 +61,7 @@ export default function EditTagsModal({ isOpen, onClose }: Props) {
                       value={editedValue}
                       onChange={(e) => setEditedValue(e.target.value)}
                       placeholder="Value"
+                      maxLength={20}
                     />
                     <div className="flex items-center gap-2">
                     <button
