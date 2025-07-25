@@ -7,6 +7,7 @@ import { useTheme } from "../../context/ThemeContext";
 import CreatableSelect from "react-select/creatable";
 import { useForm, Controller } from "react-hook-form";
 import type { Task } from "../../types/task";
+import { getCustomSelectStyles } from "../../styles/selectStyles";
 
 type Props = {
   task: Task | null;
@@ -57,38 +58,7 @@ export default function EditTaskModal({ task, onClose }: Props) {
     }
   }, [task, reset]);
 
-  const customSelectStyles = {
-    control: (base: any) => ({
-      ...base,
-      backgroundColor: isDark ? "#1f2937" : "#ffffff",
-      borderColor: isDark ? "#374151" : "#d1d5db",
-      color: isDark ? "#f9fafb" : "#111827",
-    }),
-    menu: (base: any) => ({
-      ...base,
-      backgroundColor: isDark ? "#1f2937" : "#ffffff",
-      color: isDark ? "#f9fafb" : "#111827",
-    }),
-    option: (base: any, state: any) => ({
-      ...base,
-      backgroundColor: state.isFocused
-        ? isDark
-          ? "#374151"
-          : "#e5e7eb"
-        : isDark
-        ? "#1f2937"
-        : "#ffffff",
-      color: isDark ? "#f9fafb" : "#111827",
-    }),
-    multiValue: (base: any) => ({
-      ...base,
-      backgroundColor: isDark ? "#374151" : "#e5e7eb",
-    }),
-    multiValueLabel: (base: any) => ({
-      ...base,
-      color: isDark ? "#f9fafb" : "#111827",
-    }),
-  };
+  const customSelectStyles = getCustomSelectStyles(isDark);
 
   const onSubmit = (data: FormData) => {
     if (!task) return;

@@ -12,6 +12,7 @@ import type { Task } from "../../types/task";
 import Column from "../board/Column";
 import EditTagsModal from "../modals/EditTagsModal";
 import Select from "react-select";
+import { getCustomSelectStyles } from "../../styles/selectStyles";
 
 export default function Board() {
   const { tasks, updateTask } = useTasks();
@@ -23,38 +24,7 @@ export default function Board() {
     { label: string; value: string }[]
   >([]);
 
-  const customSelectStyles = {
-    control: (base: any) => ({
-      ...base,
-      backgroundColor: isDark ? "#1f2937" : "#ffffff",
-      borderColor: isDark ? "#374151" : "#d1d5db",
-      color: isDark ? "#f9fafb" : "#111827",
-    }),
-    menu: (base: any) => ({
-      ...base,
-      backgroundColor: isDark ? "#1f2937" : "#ffffff",
-      color: isDark ? "#f9fafb" : "#111827",
-    }),
-    option: (base: any, state: any) => ({
-      ...base,
-      backgroundColor: state.isFocused
-        ? isDark
-          ? "#374151"
-          : "#e5e7eb"
-        : isDark
-        ? "#1f2937"
-        : "#ffffff",
-      color: isDark ? "#f9fafb" : "#111827",
-    }),
-    multiValue: (base: any) => ({
-      ...base,
-      backgroundColor: isDark ? "#374151" : "#e5e7eb",
-    }),
-    multiValueLabel: (base: any) => ({
-      ...base,
-      color: isDark ? "#f9fafb" : "#111827",
-    }),
-  };
+  const customSelectStyles = getCustomSelectStyles(isDark);
 
   const selectedTagIds = selectedTagOptions.map((tag) => tag.value);
 
