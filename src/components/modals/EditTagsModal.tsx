@@ -39,7 +39,7 @@ export default function EditTagsModal({ isOpen, onClose }: Props) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/40">
-      <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-xl w-full max-w-md border border-gray-200 dark:border-gray-700 max-h-[95vh]">
+      <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-xl w-[90vw] max-w-md border border-gray-200 dark:border-gray-700 max-h-[95vh]">
         <h2 className="text-xl font-semibold mb-4 text-gray-800 dark:text-gray-100">
           Edit Tags
         </h2>

@@ -2,6 +2,10 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+@theme {
+  --breakpoint-lg: 1220px;
+}
+
 .react-calendar {
   background-color: white;
   color: black;

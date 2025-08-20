@@ -5,9 +5,13 @@ import { useTheme } from "../../context/ThemeContext";
 import CreatableSelect from "react-select/creatable";
 import { components, type InputProps } from "react-select";
 
+import { createPortal } from "react-dom";
 import { useForm, Controller } from "react-hook-form";
 import type { Task } from "../../types/task";
-import { getCustomSelectStyles, type OptionType } from "../../styles/selectStyles";
+import {
+  getCustomSelectStyles,
+  type OptionType,
+} from "../../styles/selectStyles";
 
 type Props = {
   isOpen: boolean;
@@ -73,9 +77,9 @@ export default function CreateTaskModal({ isOpen, onClose }: Props) {
 
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/40">
-      <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-xl w-full max-w-md border border-gray-200 dark:border-gray-700 max-h-[95vh] overflow-y-auto">
+      <div className="bg-white dark:bg-gray-900 p-6 rounded-2xl shadow-xl w-[90vw] max-w-md border border-gray-200 dark:border-gray-700 max-h-[95vh] overflow-y-auto">
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">
@@ -187,6 +191,7 @@ export default function CreateTaskModal({ isOpen, onClose }: Props) {
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

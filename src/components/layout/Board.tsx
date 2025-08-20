@@ -60,8 +60,8 @@ export default function Board() {
 
   return (
     <>
-      <div className="p-4 transition-colors duration-300">
-        <h1 className="text-xl font-bold text-gray-800 dark:text-gray-100">
+      <div className="p-4 transition-colors duration-300 flex flex-col items-center lg:items-start">
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
           Your Tasks
         </h1>
         <span className="flex items-center gap-1 text-base text-gray-500 dark:text-gray-400 mt-1">
@@ -94,7 +94,7 @@ export default function Board() {
         </div>
 
         {selectedTagOptions.length > 0 && (
-          <span className="text-sm text-gray-600 dark:text-gray-300 ml-auto">
+          <span className="text-sm text-gray-600 dark:text-gray-300 mt-2">
             Filtered: {filteredTasks.length} of {tasks.length} tasks
           </span>
         )}
@@ -106,7 +106,7 @@ export default function Board() {
       </div>
 
       <DragDropContext onDragEnd={handleDragEnd}>
-        <div className="flex gap-4 p-4 items-start">
+        <div className="flex flex-wrap gap-4 p-4 justify-center lg:justify-start items-start">
           <Column title="Planning" tasks={planning} status="planning" />
           <Column title="In Progress" tasks={inProgress} status="in-progress" />
           <Column title="Done" tasks={done} status="done" />

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { FaPlus, FaSun, FaMoon } from "react-icons/fa";
+import { IoClose } from "react-icons/io5";
 import CreateTaskModal from "../modals/CreateTaskModal";
 
 import Calendar from "react-calendar";
@@ -8,7 +9,12 @@ import "react-calendar/dist/Calendar.css";
 import { useTasks } from "../../context/TaskContext";
 import { useTheme } from "../../context/ThemeContext";
 
-export default function Sidebar() {
+type SidebarProps = {
+  isOpen: boolean;
+  onClose: () => void;
+};
+
+export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { tasks } = useTasks();
@@ -30,11 +36,22 @@ export default function Sidebar() {
   });
 
   return (
-    <div className="w-72 h-screen fixed z-50 overflow-y-auto bg-slate-50 dark:bg-gray-900 p-4 border-r border-gray-200 dark:border-gray-700 transition-colors duration-300 shadow-sm flex flex-col justify-between">
+    <div
+      className={`w-full sm:w-72 h-screen fixed z-50 overflow-y-auto bg-slate-50 dark:bg-gray-900 p-4 border-r border-gray-200 dark:border-gray-700 transition-all duration-300 shadow-sm ${
+        isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+       } flex flex-col justify-between`}
+    >
       <div>
-        <h2 className="text-2xl font-bold mb-6 text-blue-600 dark:text-blue-400">
-          TaskForge
-        </h2>
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+            TaskForge
+          </h2>
+          <IoClose
+            className="text-gray-900 dark:text-gray-100 lg:hidden cursor-pointer"
+            onClick={onClose}
+            size={32}
+          />
+        </div>
 
         <div className="mb-8">
           <h3 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-3">
@@ -79,7 +96,7 @@ export default function Sidebar() {
             Calendar
           </h3>
 
-          <div className="bg-white dark:bg-gray-800">
+          <div className="bg-white dark:bg-gray-800 flex justify-center items-center">
             <Calendar
               onChange={(date) => setSelectedDate(date as Date)}
               value={selectedDate}
