@@ -30,9 +30,10 @@ export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
     return [
       {
         id: 1,
-        title: "Example task",
-        description: "This is an example task",
-        tags: ["example", "frontend", "backend"],
+        title: "Welcome to TaskForge!",
+        description:
+          "Organize tasks into columns like Planning, In Progress, and Done. Try dragging me to another column to get started!",
+        tags: ["onboarding", "tutorial"],
         status: "planning",
       },
     ];
@@ -72,7 +73,9 @@ export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <TaskContext.Provider value={{ tasks, addTask, setTasks, deleteTask, updateTask }}>
+    <TaskContext.Provider
+      value={{ tasks, addTask, setTasks, deleteTask, updateTask }}
+    >
       {children}
     </TaskContext.Provider>
   );

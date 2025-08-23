@@ -24,15 +24,13 @@ export function TagProvider({ children }: { children: ReactNode }) {
       return stored
         ? JSON.parse(stored)
         : [
-            { id: "example", label: "example" },
-            { id: "frontend", label: "frontend" },
-            { id: "backend", label: "backend" },
+            { id: "onboarding", label: "onboarding" },
+            { id: "tutorial", label: "tutorial" },
           ];
     } catch {
       return [
-        { id: "example", label: "example" },
-        { id: "frontend", label: "frontend" },
-        { id: "backend", label: "backend" },
+        { id: "onboarding", label: "onboarding" },
+        { id: "tutorial", label: "tutorial" },
       ];
     }
   });
