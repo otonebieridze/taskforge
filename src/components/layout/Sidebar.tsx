@@ -2,6 +2,7 @@ import { useState } from "react";
 import { FaPlus, FaSun, FaMoon } from "react-icons/fa";
 import { IoClose } from "react-icons/io5";
 import CreateTaskModal from "../modals/CreateTaskModal";
+import "../../styles/sidebar.css";
 
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
@@ -37,7 +38,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
   return (
     <div
-      className={`w-full sm:w-72 h-screen fixed z-50 overflow-y-auto bg-slate-50 dark:bg-gray-900 p-4 border-r border-gray-200 dark:border-gray-700 transition-all duration-300 shadow-sm ${
+      className={`sidebar w-full sm:w-72 h-screen fixed z-50 overflow-y-auto bg-slate-50 dark:bg-gray-900 p-4 border-r border-gray-200 dark:border-gray-700 transition-all duration-300 shadow-sm ${
         isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
        } flex flex-col justify-between`}
     >
