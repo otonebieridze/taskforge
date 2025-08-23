@@ -23,9 +23,9 @@ export default function TaskCard({ task }: Props) {
         className="bg-white dark:bg-zinc-900 p-4 rounded-xl shadow-sm hover:shadow-md border border-gray-200 dark:border-zinc-700 transition duration-300 space-y-2 cursor-pointer select-none"
       >
         <div className="w-full flex items-start justify-between gap-2">
-          <h3 className="text-base font-semibold text-gray-800 dark:text-zinc-100 break-all">
+          <p lang="en" className="text-base font-semibold text-gray-800 dark:text-zinc-100 break-words hyphens-auto max-w-[85%]">
             {task.title}
-          </h3>
+          </p>
           <FaTrashAlt
             onClick={() => deleteTask(task.id)}
             className="text-red-500 hover:text-red-600 min-w-[18px] min-h-[18px]"
@@ -34,7 +34,7 @@ export default function TaskCard({ task }: Props) {
         </div>
 
         {task.description && (
-          <p className="text-sm text-gray-600 dark:text-zinc-300 break-all">
+          <p lang="en" className="text-sm text-gray-600 dark:text-zinc-300 break-words hyphens-auto max-w-full">
             {task.description}
           </p>
         )}
@@ -50,7 +50,7 @@ export default function TaskCard({ task }: Props) {
             {task.tags.map((tag, index) => (
               <span
                 key={index}
-                className="flex text-xs font-medium bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 px-2 py-1 rounded-xl break-all"
+                className="flex text-xs font-medium bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 px-2 py-1 rounded-xl break-words hyphens-auto"
               >
                 #{tag}
               </span>
