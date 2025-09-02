@@ -1,11 +1,8 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import type { ReactNode } from "react";
 import { useTasks } from "./TaskContext";
-
-export type Tag = {
-  id: string;
-  label: string;
-};
+import type { Tag } from "../types/tag";
+import { DEFAULT_TAGS } from "../constants/constants";
 
 type TagContextType = {
   tags: Tag[];
@@ -21,17 +18,10 @@ export function TagProvider({ children }: { children: ReactNode }) {
   const [tags, setTags] = useState<Tag[]>(() => {
     try {
       const stored = localStorage.getItem("tags");
-      return stored
-        ? JSON.parse(stored)
-        : [
-            { id: "onboarding", label: "onboarding" },
-            { id: "tutorial", label: "tutorial" },
-          ];
-    } catch {
-      return [
-        { id: "onboarding", label: "onboarding" },
-        { id: "tutorial", label: "tutorial" },
-      ];
+      return stored ? JSON.parse(stored) : DEFAULT_TAGS;
+    } catch (error) {
+      console.error("Failed to parse tags from localStorage", error);
+      return DEFAULT_TAGS;
     }
   });
 

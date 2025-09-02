@@ -1,5 +1,6 @@
 import { useEffect, useState, createContext, useContext } from "react";
 import type { Task } from "../types/task";
+import { DEFAULT_TASKS } from "../constants/constants";
 
 type TaskContextType = {
   tasks: Task[];
@@ -15,32 +16,25 @@ type TaskContextType = {
   updateTask: (updatedTask: Task) => void;
 };
 
-const TaskContext = createContext<TaskContextType | null>(null);
+const TaskContext = createContext<TaskContextType | undefined>(undefined);
 
 export const TaskProvider = ({ children }: { children: React.ReactNode }) => {
   const [tasks, setTasks] = useState<Task[]>(() => {
-    const stored = localStorage.getItem("tasks");
-    if (stored) {
-      try {
-        return JSON.parse(stored);
-      } catch {
-        console.error("Invalid JSON in localStorage");
-      }
+    try {
+      const stored = localStorage.getItem("tasks");
+      return stored ? JSON.parse(stored) : DEFAULT_TASKS;
+    } catch (error) {
+      console.error("Failed to parse tasks from localStorage", error);
+      return DEFAULT_TASKS;
     }
-    return [
-      {
-        id: 1,
-        title: "Welcome to TaskForge!",
-        description:
-          "Organize tasks into columns like Planning, In Progress, and Done. Try dragging me to another column to get started!",
-        tags: ["onboarding", "tutorial"],
-        status: "planning",
-      },
-    ];
   });
 
   useEffect(() => {
-    localStorage.setItem("tasks", JSON.stringify(tasks));
+    try {
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+    } catch (error) {
+      console.error("Failed to save tasks to localStorage", error);
+    }
   }, [tasks]);
 
   const addTask = (
