@@ -54,7 +54,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           />
         </div>
 
-        <div className="mb-8">
+        <div className="mb-8 progress-summary">
           <h3 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-3">
             Progress Summary
           </h3>
@@ -92,7 +92,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           </div>
         </div>
 
-        <div className="mb-8">
+        <div className="calendar-section">
           <h3 className="text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-3">
             Calendar
           </h3>
@@ -101,7 +101,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
             <Calendar
               onChange={(date) => setSelectedDate(date as Date)}
               value={selectedDate}
-              className="w-full text-sm"
+              className="min-w-full text-sm"
               tileContent={({ date, view }) => {
                 const hasTasks = tasks.some(
                   (task) =>
@@ -154,14 +154,14 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
       <div className="space-y-3">
         <button
           onClick={() => setIsModalOpen(true)}
-          className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl shadow-md cursor-pointer transition-colors duration-300"
+          className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl shadow-md cursor-pointer transition-colors duration-300 [@media(max-height:825px)]:hidden"
         >
           <FaPlus className="text-sm" /> Add Task
         </button>
 
         <button
           onClick={() => setIsDark(!isDark)}
-          className="w-full flex items-center justify-center gap-2 px-4 py-2 mb-4 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 font-medium cursor-pointer transition-colors duration-300"
+          className="w-full flex items-center justify-center gap-2 px-4 py-2 mb-4 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 font-medium cursor-pointer transition-colors duration-300 [@media(max-height:772px)]:hidden"
         >
           {isDark ? (
             <>

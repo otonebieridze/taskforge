@@ -1,3 +1,41 @@
+/* MEDIA */
+@media (max-height: 680px) {
+  .sidebar .progress-summary h3,
+  .sidebar .calendar-section h3 {
+    font-size: 0.75rem;
+  }
+  .sidebar .progress-summary .text-sm,
+  .sidebar .calendar-section .text-sm {
+    font-size: 0.7rem;
+  }
+  .sidebar .calendar-section .react-calendar {
+    font-size: 0.7rem;
+    transform-origin: top;
+  }
+  .sidebar .progress-summary .w-full.h-3 {
+    height: 0.5rem;
+  }
+}
+
+@media (max-height: 630px) {
+  .sidebar .progress-summary h3,
+  .sidebar .calendar-section h3 {
+    font-size: 0.65rem;
+  }
+  .sidebar .progress-summary .text-sm,
+  .sidebar .calendar-section .text-sm {
+    font-size: 0.6rem;
+  }
+  .sidebar .calendar-section .react-calendar {
+    font-size: 0.6rem;
+    transform-origin: top;
+  }
+  .sidebar .progress-summary .w-full.h-3 {
+    height: 0.35rem;
+  }
+}
+
+/* SCROLLBAR */
 .sidebar::-webkit-scrollbar {
   width: 6px;
 }
@@ -16,7 +54,6 @@
 .sidebar::-webkit-scrollbar-thumb:active {
   background-color: rgba(100, 100, 100, 0.8);
 }
-
 /* Firefox */
 .sidebar {
   scrollbar-width: thin;
